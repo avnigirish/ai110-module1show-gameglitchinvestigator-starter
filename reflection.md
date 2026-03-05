@@ -5,8 +5,11 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 ## 1. What was broken when you started?
 
 - What did the game look like the first time you ran it?
+  - The game was not organized well. The instructions were inaccurate (i.e. the number of attempts the user had to guess the game). And the instruction was incorrect for when a user entered a number to guess the secret. And sometimes, when the secret is guessed, it would say "Game Over" and "You won."
 - List at least two concrete bugs you noticed at the start  
   (for example: "the secret number kept changing" or "the hints were backwards").
+  1. The hints were backwards from the range of 1-100. However, if entered a number outside the range, it simply said to go lower even if the number is bellow the range
+  2. I noticed that the `New Game` button doesn't actually work and refresh the game. When clicked on the button, it said "ypu already won. Start a new game to play again." And there were score mismatches from the debugger output and the website screen
 
 ---
 
