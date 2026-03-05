@@ -1,63 +1,12 @@
 import random
 import streamlit as st
 
-def get_range_for_difficulty(difficulty: str):
-    if difficulty == "Easy":
-        return 1, 20
-    if difficulty == "Normal":
-        return 1, 100
-    if difficulty == "Hard":
-        return 1, 50
-    return 1, 100
-
-
-def parse_guess(raw: str):
-    if raw is None:
-        return False, None, "Enter a guess."
-
-    if raw == "":
-        return False, None, "Enter a guess."
-
-    try:
-        if "." in raw:
-            value = int(float(raw))
-        else:
-            value = int(raw)
-    except Exception:
-        return False, None, "That is not a number."
-
-    return True, value, None
-
-
-def check_guess(guess, secret):
-    # normalize secret to int when possible to avoid type-mismatch bugs
-    try:
-        secret_val = int(secret)
-    except Exception:
-        secret_val = secret
-
-    if guess == secret_val:
-        return "Win", "🎉 Correct!"
-
-    if guess > secret_val:
-        return "Too High", "📉 Go LOWER!"
-
-    return "Too Low", "📈 Go HIGHER!"
-
-
-def update_score(current_score: int, outcome: str, attempt_number: int):
-    # Win: reward decreases with attempts (first attempt = 100, then 90, ...), minimum 10
-    if outcome == "Win":
-        points = 100 - 10 * (attempt_number - 1)
-        if points < 10:
-            points = 10
-        return current_score + points
-
-    # Both "Too High" and "Too Low" penalize the player
-    if outcome in ("Too High", "Too Low"):
-        return current_score - 5
-
-    return current_score
+from logic_utils import (
+    get_range_for_difficulty,
+    parse_guess,
+    check_guess,
+    update_score,
+)
 
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
 
@@ -156,7 +105,15 @@ if submit:
         # always compare against the numeric secret
         secret = st.session_state.secret
 
-        outcome, message = check_guess(guess_int, secret)
+        outcome = check_guess(guess_int, secret)
+
+        # map outcome to human-friendly hint message
+        if outcome == "Win":
+            message = "🎉 Correct!"
+        elif outcome == "Too High":
+            message = "📉 Go LOWER!"
+        else:
+            message = "📈 Go HIGHER!"
 
         if show_hint:
             st.warning(message)
