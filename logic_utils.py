@@ -4,6 +4,9 @@ def get_range_for_difficulty(difficulty: str):
         return 1, 20
     if difficulty == "Normal":
         return 1, 100
+    # FIX: Changed Hard from 1-50 to 1-500 with Claude Code assistance
+    # Bug was: Hard difficulty (1-50) was narrower than Normal (1-100), making it easier
+    # Solution: Widened Hard range to 1-500 to make it actually harder
     if difficulty == "Hard":
         return 1, 500
     return 1, 100

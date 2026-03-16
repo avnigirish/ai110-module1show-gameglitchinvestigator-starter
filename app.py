@@ -86,6 +86,9 @@ if st.session_state.status != "playing":
     st.stop()
 
 if submit:
+    # FIX: Moved attempt increment after validation with Claude Code assistance
+    # Bug was: attempts incremented BEFORE validating input, wasting attempts on invalid entries
+    # Solution: Only increment attempts for valid numeric guesses
     ok, guess_int, err = parse_guess(raw_guess)
 
     if not ok:
