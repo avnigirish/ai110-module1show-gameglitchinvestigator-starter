@@ -6,6 +6,7 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 
 - What did the game look like the first time you ran it?
   - The game was not organized well. The instructions were inaccurate (i.e. the number of attempts the user had to guess the game). And the instruction was incorrect for when a user entered a number to guess the secret. And sometimes, when the secret is guessed, it would say "Game Over" and "You won."
+  
 - List at least two concrete bugs you noticed at the start  
   (for example: "the secret number kept changing" or "the hints were backwards").
   1. The hints were backwards from the range of 1-100. However, if entered a number outside the range, it simply said to go lower even if the number is bellow the range
@@ -44,14 +45,23 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 ## 4. What did you learn about Streamlit and state?
 
 - In your own words, explain why the secret number kept changing in the original app.
+  - The original code called `random.randint(low, high)` at the top level without using Streamlit's session state. Every time a user interacted with the app (clicked a button, typed in the text input), Streamlit would rerun the entire script from top to bottom. This meant `random.randint()` was executed again, generating a new random number. The secret had no persistence between reruns.
+
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
+  - Streamlit reruns are like your app constantly reloading. Every time something changes (button click, form input, etc.), the entire script runs again from the top. Without session state, variables are reset to their initial values each rerun. Session state is like a sticky note that remembers values across reruns. It says: "Hey, when you run again, remember what I stored before." Without it, your game's secret number disappears. With it, the secret persists until you explicitly reset it.
+
 - What change did you make that finally gave the game a stable secret number?
+  - Added Streamlit session state initialization: `if "secret" not in st.session_state: st.session_state.secret = random.randint(low, high)`. This checks if the secret already exists before generating a new one. Because session state persists across reruns, the secret is generated only once and remains stable throughout the game session.
 
 ---
 
 ## 5. Looking ahead: your developer habits
 
 - What is one habit or strategy from this project that you want to reuse in future labs or projects?
-  - This could be a testing habit, a prompting strategy, or a way you used Git.
+  - By moving the guessing game logic into `logic_utils.py` and writing pytest tests for pure functions (without Streamlit), I could debug issues much faster. Testing pure functions is simpler than debugging an entire Streamlit app. I'll apply this pattern to future projects: extract business logic, write tests for it, then build the UI on top.
+
 - What is one thing you would do differently next time you work with AI on a coding task?
+  - When Claude suggested refactoring the random number generation with a custom seed class, I initially thought that was the right approach. But then I pushed back and asked: "Is there a simpler fix?" That's when the session state solution emerged—much simpler and more elegant. Next time, I'll be more skeptical of complex solutions and ask "What's the simplest way to fix this?" upfront instead of going down elaborate paths.
+
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+  - AI can generate working code quickly, but it doesn't always produce the simplest or best solution—sometimes it overengineers. The key is treating AI as a helpful teammate, not an oracle: verify suggestions, ask critical questions, and don't hesitate to reject or simplify overly complex ideas.
