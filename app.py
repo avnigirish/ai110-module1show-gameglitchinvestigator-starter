@@ -143,16 +143,13 @@ if st.session_state.status != "playing":
     st.stop()
 
 if submit:
-    # FIXME: Logic breaks here — attempts increments BEFORE we check if the input is valid.
-    # Typing letters or leaving the field blank still wastes an attempt.
-    st.session_state.attempts += 1
-
     ok, guess_int, err = parse_guess(raw_guess)
 
     if not ok:
         st.session_state.history.append(raw_guess)
         st.error(err)
     else:
+        st.session_state.attempts += 1
         st.session_state.history.append(guess_int)
 
         # always compare against the numeric secret
