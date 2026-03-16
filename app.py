@@ -6,6 +6,8 @@ def get_range_for_difficulty(difficulty: str):
         return 1, 20
     if difficulty == "Normal":
         return 1, 100
+    # FIXME: Logic breaks here — Hard returns 1-50 which is NARROWER than Normal (1-100),
+    # making Hard easier to guess, not harder. Should be a wider range (e.g. 1-200 or 1-500).
     if difficulty == "Hard":
         return 1, 50
     return 1, 100
@@ -143,6 +145,8 @@ if st.session_state.status != "playing":
     st.stop()
 
 if submit:
+    # FIXME: Logic breaks here — attempts increments BEFORE we check if the input is valid.
+    # Typing letters or leaving the field blank still wastes an attempt.
     st.session_state.attempts += 1
 
     ok, guess_int, err = parse_guess(raw_guess)
